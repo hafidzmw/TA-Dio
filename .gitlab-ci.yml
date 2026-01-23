@@ -1,0 +1,7 @@
+test-runner:
+  image: docker:26
+  tags:
+    - docker
+  script:
+    - docker version
+    - docker ps
