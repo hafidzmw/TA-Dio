@@ -2,6 +2,6 @@ test-docker:
   stage: test
   image: docker:26
   variables:
-  DOCKER_HOST: unix:///var/run/docker.sock
+    DOCKER_HOST: unix:///var/run/docker.sock
   script:
     - docker ps
