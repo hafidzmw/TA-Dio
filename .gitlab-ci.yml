@@ -1,4 +1,5 @@
-test-no-tag:
+test-docker:
   stage: test
+  image: docker:26
   script:
-    - echo "no tag works"
+    - docker ps
