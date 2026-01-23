@@ -1,6 +1,4 @@
-test-with-tag:
+test-no-tag:
   stage: test
-  tags:
-    - docker
   script:
-    - echo "tag docker works"
+    - echo "no tag works"
