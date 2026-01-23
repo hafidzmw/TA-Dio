@@ -4,6 +4,5 @@ test-docker:
     DOCKER_HOST: unix:///var/run/docker.sock
     DOCKER_TLS_CERTDIR: ""
   script:
-    - ls -l /var/run/docker.sock
     - docker version
     - docker ps
