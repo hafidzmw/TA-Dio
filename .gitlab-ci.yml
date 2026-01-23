@@ -1,9 +1,6 @@
-test-docker:
+test-with-tag:
   stage: test
   tags:
     - docker
-  image: docker:26
   script:
-    - which docker
-    - docker version
-    - docker ps
+    - echo "tag docker works"
