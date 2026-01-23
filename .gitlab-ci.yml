@@ -1,5 +1,5 @@
-test-docker:
-  stage: test
+test-runner:
+  image: docker:26
   tags:
     - docker
   script:
