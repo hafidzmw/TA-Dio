@@ -4,4 +4,6 @@ test-docker:
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock
   script:
+    - ls -l /var/run/docker.sock
+    - docker version
     - docker ps
