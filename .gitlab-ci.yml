@@ -1,5 +1,9 @@
-test-runner:
+test-docker:
   stage: test
+  tags:
+    - docker
+  image: docker:26
   script:
+    - which docker
     - docker version
     - docker ps
