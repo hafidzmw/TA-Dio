@@ -1,4 +1,7 @@
-test-runner:
+test-docker:
   stage: test
+  tags:
+    - docker
+  image: docker:26
   script:
-    - echo "runner OK"
+    - docker ps
