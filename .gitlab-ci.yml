@@ -1,7 +1,5 @@
 test-runner:
   stage: test
-  tags:
-    - docker
   script:
     - docker version
     - docker ps
