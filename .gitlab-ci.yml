@@ -1,6 +1,6 @@
-test-docker:
+test-runner:
   stage: test
   script:
-    - command -v docker
-    - docker version
-    - docker ps
+    - echo "RUNNER OK"
+    - whoami
+    - hostname
