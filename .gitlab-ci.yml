@@ -1,6 +1,6 @@
 test-docker:
   stage: test
   script:
-    - which docker
-    - docker ps
-    - echo "done setup"
+script:
+  - bash -lc "which docker"
+  - bash -lc "docker ps"
