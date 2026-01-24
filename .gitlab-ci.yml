@@ -5,3 +5,4 @@ test-docker:
     - whoami
     - which docker
     - docker ps
+    - echo "done setup"
