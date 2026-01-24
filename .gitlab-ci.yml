@@ -1,5 +1,6 @@
-test-env:
+test-docker:
   stage: test
   script:
-    - echo "PATH=$PATH"
-    - ls -l /usr/bin/docker
+    - which docker
+    - docker version
+    - docker ps
