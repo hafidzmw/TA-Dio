@@ -1,8 +1,5 @@
 test-docker:
   stage: test
-  tags:
-    - runners-ta
-    - docker
   script:
     - command -v docker
     - docker version
