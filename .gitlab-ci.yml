@@ -1,6 +1,20 @@
+<<<<<<< HEAD
 job-test:
+=======
+test-runner:
+>>>>>>> 40d0ec36077b13da5b286b40c6f8e2705f89e193
   stage: test
+  tags:
+    - docker
+  only: 
+    - deploy
   script:
+<<<<<<< HEAD
     - echo "Testing boss"
   tags:
     - docker
+=======
+    - echo "RUNNER OK"
+    - whoami
+    - hostname
+>>>>>>> 40d0ec36077b13da5b286b40c6f8e2705f89e193
