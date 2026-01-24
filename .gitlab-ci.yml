@@ -1,5 +1,6 @@
 test-docker:
   stage: test
   script:
+    - which docker
     - docker version
     - docker ps
