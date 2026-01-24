@@ -1,5 +1,7 @@
-test-env:
+test-docker:
   stage: test
   script:
-    - echo "PATH=$PATH"
-    - ls -l /usr/bin/docker
+    - export PATH=/usr/bin:/bin:/usr/local/bin
+    - whoami
+    - which docker
+    - docker ps
