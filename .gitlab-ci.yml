@@ -1,8 +1,5 @@
 test-docker:
   stage: test
-  variables:
-    DOCKER_HOST: unix:///var/run/docker.sock
-    DOCKER_TLS_CERTDIR: ""
   script:
     - docker version
     - docker ps
