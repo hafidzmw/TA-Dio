@@ -1,6 +1,6 @@
 test-docker:
   stage: test
   script:
-script:
-  - bash -lc "which docker"
-  - bash -lc "docker ps"
+    - command -v docker
+    - docker version
+    - docker ps
