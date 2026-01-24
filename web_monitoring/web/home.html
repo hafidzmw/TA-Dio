@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Monitoring</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Side bar -->
+        <div class="side-bar">
+            <h2>Electricity Monitoring</h2>
+            <ul>
+                <li id="home"><a href="home.html">Home</a></li>
+                <li><a href="reports.html">Reports Chart</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Energy Monitoring Dashboard</h2>
+                <p>Secure your electricity</p>
+            </div>
+            <!-- Dashboard Section -->
+ 
+            <!-- Metric Cards -->
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">THEFT DETECTION</h3>
+                        <div class="card-icon">⚠️</div>
+                    </div>
+                    <div class="dashboard-value" id="balance">--<span class="unit"></span></div>
+                    <div class="trend">Theft detection flag</div>
+                </div>
+ 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">VOLTAGE</h3>
+                        <div class="card-icon">V</div>
+                    </div>
+                    <div class="dashboard-value" id="voltage">--<span class="unit">V</span></div>
+                    <div class="trend">Line voltage</div>
+                </div>
+ 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">CURRENT</h3>
+                        <div class="card-icon">A</div>
+                    </div>
+                    <div class="dashboard-value" id="current">--<span class="unit">A</span></div>
+                    <div class="trend">Line current</div>
+                </div>
+ 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">POWER</h3>
+                        <div class="card-icon">W</div>
+                    </div>
+                    <div class="dashboard-value" id="power">--<span class="unit">W</span></div>
+                    <div class="trend">Active power</div>
+                </div>
+            </div>
+            <!-- End of Metric Cards -->
+             
+            <!-- Chart and Action Button Section -->
+            <div class="chart-button-section">
+                <!-- chart section -->
+                <div class="chart-section">
+                    <h3>Power Consumption Chart</h3>
+                    <canvas id="allParamsChart" width="600" height="300"></canvas>
+                </div>
+                <!-- end of chart section -->
+
+                <!-- action button section -->
+                <div class="action-button-section">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Action</h3>
+                    </div>
+                    <div class="action-content">
+                        <div id="power-control-alert" style="display:none;" class="alert"></div>
+                        <p style="margin-bottom:15px;">Cut Off Button</p>
+                        <div class="button-section">
+                            <button id="power-on-btn" class="btn btn-success" onclick="setRelay(1)" style="flex:1;" disabled>Power ON</button>
+                            <button id="power-off-btn" class="btn btn-danger" onclick="setRelay(0)" style="flex:1;" disabled>Power OFF</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of action button section -->
+            </div>
+            <!-- End of Chart Section -->
+        </div>
+    </div>
+
+<script src="script/home.js"></script>
+</body>
+</html>
