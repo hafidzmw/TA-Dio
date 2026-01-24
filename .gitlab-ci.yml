@@ -1,5 +1,9 @@
 test-runner:
   stage: test
+  tags:
+    - docker
+  only: 
+    - deploy
   script:
     - echo "RUNNER OK"
     - whoami
