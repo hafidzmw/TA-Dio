@@ -1,7 +1,6 @@
 test-docker:
   stage: test
   script:
-    - export PATH=/usr/bin:/bin:/usr/local/bin
     - whoami
     - which docker
     - docker ps
