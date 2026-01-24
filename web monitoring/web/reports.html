@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports | Electricity Monitoring</title>
+
+    <link rel="stylesheet" href="css/reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="main-container">
+    <!-- Sidebar -->
+    <div class="side-bar">
+        <h2>Electricity Monitoring</h2>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li id="reports"><a href="reports.html">Reports Chart</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <div class="page-header">
+            <h2>System Reports & Analysis</h2>
+            <p>Electricity usage behavior and anomaly detection results</p>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="reports-container">
+            <div class="chart-card">
+                <h3>Power Consumption (W)</h3>
+                <canvas id="powerChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Current Consumption (A)</h3>
+                <canvas id="currentChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Voltage Level (V)</h3>
+                <canvas id="voltageChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Anomaly Detection Timeline</h3>
+                <canvas id="anomalyChart"></canvas>
+            </div>
+        </div>
+        <!-- End of Chart Section -->
+
+        <!-- Export Data -->
+        <div class="settings-card">
+            <h3>Export Monitoring Data</h3>
+            <button class="btn btn-primary">
+                Export Data (.csv)
+            </button>
+        </div>
+         <!-- End of Export Data -->
+
+    </div>
+</div>
+
+<script src="script/report-charts.js"></script>
+</body>
+</html>
