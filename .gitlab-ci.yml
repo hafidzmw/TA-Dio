@@ -1,6 +1,6 @@
-test-docker:
+job-test:
   stage: test
   script:
-    - command -v docker
-    - docker version
-    - docker ps
+    - echo "Testing boss"
+  tags:
+    - docker
