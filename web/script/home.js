@@ -45,14 +45,23 @@ let allParamsChart;
 
 async function loadChartData() {
   try {
-    const res = await fetch(`${API_BASE}/get_latest.php?limit=${CHART_LIMIT}`);
+    // ✅ FIX: gunakan get_history.php
+    const res = await fetch(`${API_BASE}/get_history.php?limit=${CHART_LIMIT}`);
     const rows = await res.json();
 
-    const labels   = rows.map(r => r.timestamp);
-    const power    = rows.map(r => r.power);
-    const current  = rows.map(r => r.current);
-    const voltage  = rows.map(r => r.voltage);
+    // ✅ VALIDASI DATA
+    if (!Array.isArray(rows) || rows.length === 0) {
+      console.warn("Chart data empty");
+      return;
+    }
 
+    // ✅ FORMAT LABEL (HH:mm:ss)
+    const labels  = rows.map(r => r.timestamp.slice(11));
+    const power   = rows.map(r => r.power);
+    const current = rows.map(r => r.current);
+    const voltage = rows.map(r => r.voltage);
+
+    // 🔁 UPDATE CHART
     if (allParamsChart) {
       allParamsChart.data.labels = labels;
       allParamsChart.data.datasets[0].data = power;
@@ -62,6 +71,7 @@ async function loadChartData() {
       return;
     }
 
+    // 🆕 INIT CHART
     const ctx = document
       .getElementById("allParamsChart")
       .getContext("2d");
@@ -69,7 +79,7 @@ async function loadChartData() {
     allParamsChart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: labels,
+        labels,
         datasets: [
           {
             label: "Power (W)",
