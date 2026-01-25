@@ -26,6 +26,20 @@
         <div class="page-header">
             <h2>System Reports & Analysis</h2>
             <p>Electricity usage behavior and anomaly detection results</p>
+
+            <div class="filter-card">
+                <label>
+                    Start Date:
+                    <input type="date" id="startDate">
+                </label>
+
+                <label>
+                    End Date:
+                    <input type="date" id="endDate">
+                </label>
+
+                <button id="applyFilter" class="btn btn-primary">Apply Filter</button>
+            </div>
         </div>
 
         <!-- Chart Section -->
@@ -55,7 +69,7 @@
         <!-- Export Data -->
         <div class="settings-card">
             <h3>Export Monitoring Data</h3>
-            <button class="btn btn-primary">
+            <button id="exportCsv" class="btn btn-primary">
                 Export Data (.csv)
             </button>
         </div>

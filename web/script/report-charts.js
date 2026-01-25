@@ -4,24 +4,31 @@
 const API_URL = "http://192.168.1.60:8080/get_reports.php";
 
 let powerChart, currentChart, voltageChart, anomalyChart;
+let reportData = []; // cache data (siap untuk export CSV nanti)
 
 // ================================
 // FETCH DATA
 // ================================
-async function fetchReportData() {
+async function fetchReportData(start = "", end = "") {
     try {
-        const response = await fetch(API_URL);
+        let url = API_URL;
+
+        if (start && end) {
+            url += `?start=${start}&end=${end}`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch report data");
 
-        const data = await response.json();
+        const rows = await response.json();
 
-        // FIX FORMAT CHECK
-        if (!Array.isArray(data)) {
-            console.warn("Invalid report data format", data);
+        if (!Array.isArray(rows) || rows.length === 0) {
+            console.warn("Report data empty or invalid", rows);
             return;
         }
 
-        renderCharts(data);
+        reportData = rows;
+        renderCharts(rows);
 
     } catch (error) {
         console.error("Error loading reports:", error);
@@ -32,33 +39,56 @@ async function fetchReportData() {
 // CHART RENDERER
 // ================================
 function renderCharts(rows) {
-    if (!rows.length) {
-        console.warn("Report data empty");
-        return;
-    }
-
     const labels  = rows.map(r => r.timestamp.slice(11)); // HH:MM:SS
-    const power   = rows.map(r => Number(r.power));
-    const current = rows.map(r => Number(r.current));
-    const voltage = rows.map(r => Number(r.voltage));
-    const anomaly = rows.map(r => Number(r.anomaly_flag));
+    const power   = rows.map(r => r.power);
+    const current = rows.map(r => r.current);
+    const voltage = rows.map(r => r.voltage);
+    const anomaly = rows.map(r => r.anomaly_flag);
 
-    powerChart?.destroy();
-    currentChart?.destroy();
-    voltageChart?.destroy();
-    anomalyChart?.destroy();
+    // destroy old charts
+    if (powerChart) powerChart.destroy();
+    if (currentChart) currentChart.destroy();
+    if (voltageChart) voltageChart.destroy();
+    if (anomalyChart) anomalyChart.destroy();
 
-    powerChart = createLineChart("powerChart", labels, power, "Power (W)", "#ff6384");
-    currentChart = createLineChart("currentChart", labels, current, "Current (A)", "#36a2eb");
-    voltageChart = createLineChart("voltageChart", labels, voltage, "Voltage (V)", "#4bc0c0");
-    anomalyChart = createAnomalyChart("anomalyChart", labels, anomaly);
+    powerChart = createLineChart(
+        "powerChart",
+        labels,
+        power,
+        "Power (W)",
+        "#ff6384"
+    );
+
+    currentChart = createLineChart(
+        "currentChart",
+        labels,
+        current,
+        "Current (A)",
+        "#36a2eb"
+    );
+
+    voltageChart = createLineChart(
+        "voltageChart",
+        labels,
+        voltage,
+        "Voltage (V)",
+        "#4bc0c0"
+    );
+
+    anomalyChart = createAnomalyChart(
+        "anomalyChart",
+        labels,
+        anomaly
+    );
 }
 
 // ================================
 // GENERIC LINE CHART
 // ================================
 function createLineChart(canvasId, labels, data, label, color) {
-    return new Chart(document.getElementById(canvasId), {
+    const ctx = document.getElementById(canvasId).getContext("2d");
+
+    return new Chart(ctx, {
         type: "line",
         data: {
             labels,
@@ -67,11 +97,15 @@ function createLineChart(canvasId, labels, data, label, color) {
                 data,
                 borderColor: color,
                 borderWidth: 2,
+                fill: false,
                 tension: 0.3
             }]
         },
         options: {
             responsive: true,
+            plugins: {
+                legend: { display: true }
+            },
             scales: {
                 y: { beginAtZero: true }
             }
@@ -80,10 +114,12 @@ function createLineChart(canvasId, labels, data, label, color) {
 }
 
 // ================================
-// ANOMALY CHART
+// ANOMALY CHART (STEP STYLE)
 // ================================
 function createAnomalyChart(canvasId, labels, data) {
-    return new Chart(document.getElementById(canvasId), {
+    const ctx = document.getElementById(canvasId).getContext("2d");
+
+    return new Chart(ctx, {
         type: "line",
         data: {
             labels,
@@ -111,4 +147,38 @@ function createAnomalyChart(canvasId, labels, data) {
 // ================================
 // INIT
 // ================================
-document.addEventListener("DOMContentLoaded", fetchReportData);
+document.addEventListener("DOMContentLoaded", () => {
+    fetchReportData();
+});
+
+// filter
+document.getElementById("applyFilter").addEventListener("click", () => {
+    const start = document.getElementById("startDate").value;
+    const end   = document.getElementById("endDate").value;
+
+    if (!start || !end) {
+        alert("Please select start and end date");
+        return;
+    }
+
+    if (start > end) {
+        alert("Start date cannot be after end date");
+        return;
+    }
+
+    fetchReportData(start, end);
+});
+
+// export
+document.getElementById("exportCsv").addEventListener("click", () => {
+    const start = document.getElementById("startDate").value;
+    const end   = document.getElementById("endDate").value;
+
+    if (!start || !end) {
+        alert("Please select date range before export");
+        return;
+    }
+
+    const url = `${API_URL}?start=${start}&end=${end}&export=csv`;
+    window.open(url, "_blank");
+});
