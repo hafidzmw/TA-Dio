@@ -15,7 +15,8 @@ async function fetchReportData() {
 
         const data = await response.json();
 
-        if (!data || !Array.isArray(data.timestamps)) {
+        // FIX FORMAT CHECK
+        if (!Array.isArray(data)) {
             console.warn("Invalid report data format", data);
             return;
         }
@@ -31,60 +32,33 @@ async function fetchReportData() {
 // CHART RENDERER
 // ================================
 function renderCharts(rows) {
-    if (!Array.isArray(rows) || rows.length === 0) {
+    if (!rows.length) {
         console.warn("Report data empty");
         return;
     }
 
-    const labels   = rows.map(r => r.timestamp.slice(11));
-    const power    = rows.map(r => r.power);
-    const current  = rows.map(r => r.current);
-    const voltage  = rows.map(r => r.voltage);
-    const anomaly  = rows.map(r => r.anomaly_flag);
+    const labels  = rows.map(r => r.timestamp.slice(11)); // HH:MM:SS
+    const power   = rows.map(r => Number(r.power));
+    const current = rows.map(r => Number(r.current));
+    const voltage = rows.map(r => Number(r.voltage));
+    const anomaly = rows.map(r => Number(r.anomaly_flag));
 
-    if (powerChart) powerChart.destroy();
-    if (currentChart) currentChart.destroy();
-    if (voltageChart) voltageChart.destroy();
-    if (anomalyChart) anomalyChart.destroy();
+    powerChart?.destroy();
+    currentChart?.destroy();
+    voltageChart?.destroy();
+    anomalyChart?.destroy();
 
-    powerChart = createLineChart(
-        "powerChart",
-        labels,
-        power,
-        "Power (W)",
-        "#ff6384"
-    );
-
-    currentChart = createLineChart(
-        "currentChart",
-        labels,
-        current,
-        "Current (A)",
-        "#36a2eb"
-    );
-
-    voltageChart = createLineChart(
-        "voltageChart",
-        labels,
-        voltage,
-        "Voltage (V)",
-        "#4bc0c0"
-    );
-
-    anomalyChart = createAnomalyChart(
-        "anomalyChart",
-        labels,
-        anomaly
-    );
+    powerChart = createLineChart("powerChart", labels, power, "Power (W)", "#ff6384");
+    currentChart = createLineChart("currentChart", labels, current, "Current (A)", "#36a2eb");
+    voltageChart = createLineChart("voltageChart", labels, voltage, "Voltage (V)", "#4bc0c0");
+    anomalyChart = createAnomalyChart("anomalyChart", labels, anomaly);
 }
 
 // ================================
 // GENERIC LINE CHART
 // ================================
 function createLineChart(canvasId, labels, data, label, color) {
-    const ctx = document.getElementById(canvasId).getContext("2d");
-
-    return new Chart(ctx, {
+    return new Chart(document.getElementById(canvasId), {
         type: "line",
         data: {
             labels,
@@ -93,7 +67,6 @@ function createLineChart(canvasId, labels, data, label, color) {
                 data,
                 borderColor: color,
                 borderWidth: 2,
-                fill: false,
                 tension: 0.3
             }]
         },
@@ -110,9 +83,7 @@ function createLineChart(canvasId, labels, data, label, color) {
 // ANOMALY CHART
 // ================================
 function createAnomalyChart(canvasId, labels, data) {
-    const ctx = document.getElementById(canvasId).getContext("2d");
-
-    return new Chart(ctx, {
+    return new Chart(document.getElementById(canvasId), {
         type: "line",
         data: {
             labels,
@@ -140,7 +111,4 @@ function createAnomalyChart(canvasId, labels, data) {
 // ================================
 // INIT
 // ================================
-document.addEventListener("DOMContentLoaded", () => {
-    fetchReportData();
-    // setInterval(fetchReportData, 10000); // optional
-});
+document.addEventListener("DOMContentLoaded", fetchReportData);
