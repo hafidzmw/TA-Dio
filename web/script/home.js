@@ -46,7 +46,7 @@ let allParamsChart;
 async function loadChartData() {
   try {
     // ✅ FIX: gunakan get_history.php
-    const res = await fetch(`${API_BASE}/get_history.php?limit=${CHART_LIMIT}`);
+    const res = await fetch(`${API_BASE}/get_reports.php?limit=${CHART_LIMIT}`);
     const rows = await res.json();
 
     // ✅ VALIDASI DATA
