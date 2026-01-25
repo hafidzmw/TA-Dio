@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electricity Monitoring</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Side bar -->
+        <div class="side-bar">
+            <h2>Electricity Monitoring</h2>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="reports.html">Reports Chart</a></li>
+                <li id="settings" style="background-color: rgb(42, 42, 202);"><a href="settings.html">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h2>System Settings</h2>
+                <p>Configure electricity monitoring system</p>
+            </div>
+
+            <!-- Settings content -->
+            <div class="setting-section">
+                <!-- Threshold Anomaly -->
+                <div class="settings-card">
+                    <h3>Anomaly Detection Threshold</h3>
+                    <p>Set confidence threshold for TinyML anomaly detection (0.0 – 1.0)</p>
+
+                    <input 
+                        type="range" 
+                        id="threshold"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="0.70"
+                        oninput="document.getElementById('thresholdValue').innerText = this.value"
+                    >
+                    <div>
+                        Current Threshold: <strong><span id="thresholdValue">0.70</span></strong>
+                    </div>
+                </div>
+                <!-- End of Threshold Anomaly -->
+
+                <!-- Monitoring Mode -->
+                <div class="settings-card">
+                    <h3>Monitoring Mode</h3>
+                    <p>Select system operation mode</p>
+
+                    <label>
+                        <input type="radio" name="mode" value="monitoring" checked>
+                        Monitoring Only
+                    </label><br>
+
+                    <label>
+                        <input type="radio" name="mode" value="auto_cutoff">
+                        Monitoring + Automatic Cut-Off
+                    </label>
+                </div>
+                <!-- End of Monitoring Mode -->
+
+                <!-- Telegram Notification -->
+                <div class="settings-card">
+                    <h3>Telegram Notification</h3>
+                    <p>Enable or disable anomaly alert notification</p>
+
+                    <label class="switch">
+                        <input type="checkbox" id="telegramToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span style="margin-left:10px;">Enable Telegram Notification</span>
+                </div>
+                <!-- End of Telegram Notifications -->
+
+
+            </div>
+            <!-- End of Settings content -->
+            
+            <!-- Save Settings -->
+            <button id="save-btn">Save Settings</button>
+            <!-- End of Save Settings -->  
+        
+        <!-- End of Main content -->
+    </div>
+</body>
+</html>

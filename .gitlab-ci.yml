@@ -1,6 +1,0 @@
-job-test:
-  stage: test
-  script:
-    - echo "Testing boss"
-  tags:
-    - docker
