@@ -20,7 +20,7 @@ $pdo = new PDO(
 
 $start  = $_GET['start']  ?? null;   // YYYY-MM-DD
 $end    = $_GET['end']    ?? null;   // YYYY-MM-DD
-$limit  = $_GET['limit']  ?? 200;
+$limit  = $_GET['limit']  ?? null;
 $export = $_GET['export'] ?? null;
 
 $sql = "
