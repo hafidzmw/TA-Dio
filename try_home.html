@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Electricity Monitoring</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="web/css/main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="main-container">
+
+  <!-- SIDEBAR -->
+  <div class="side-bar">
+    <h2>Electricity Monitoring</h2>
+    <ul>
+      <li class="active"><a href="index.html">Home</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <div class="page-header">
+      <h2>Energy Monitoring Dashboard</h2>
+      <p>Secure your electricity</p>
+    </div>
+
+    <!-- METRIC CARDS -->
+    <div class="card-grid">
+
+      <div class="card">
+        <h3>THEFT STATUS</h3>
+        <div id="anomaly" class="dashboard-value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>VOLTAGE</h3>
+        <div id="voltage" class="dashboard-value">-- V</div>
+      </div>
+
+      <div class="card">
+        <h3>CURRENT</h3>
+        <div id="current" class="dashboard-value">-- A</div>
+      </div>
+
+      <div class="card">
+        <h3>POWER</h3>
+        <div id="power" class="dashboard-value">-- W</div>
+      </div>
+
+    </div>
+
+    <!-- CHART + CONTROL -->
+    <div class="chart-button-section">
+
+      <div class="chart-section">
+        <h3>Power Consumption</h3>
+        <canvas id="powerChart"></canvas>
+      </div>
+
+      <div class="action-button-section">
+        <h3>Relay Control</h3>
+
+        <div id="relay-alert" class="alert"></div>
+
+        <button id="btn-on"  class="btn btn-success" onclick="setRelay(1)">
+          Power ON
+        </button>
+
+        <button id="btn-off" class="btn btn-danger" onclick="setRelay(0)">
+          Power OFF
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="web/script/home.js"></script>
+</body>
+</html>
