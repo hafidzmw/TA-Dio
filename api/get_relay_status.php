@@ -1,6 +1,13 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://192.168.1.60:8081");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $pdo = new PDO(
   "mysql:host=" . getenv('DB_HOST') . ";dbname=" . getenv('DB_NAME'),
