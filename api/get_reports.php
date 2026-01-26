@@ -24,6 +24,8 @@ $limit  = $_GET['limit']  ?? 200;
 $export = $_GET['export'] ?? null;
 
 $sql = "
+  SELECT *
+  FROM (
     SELECT timestamp, voltage, current, power, anomaly_flag
     FROM electricity_logs
 ";
@@ -31,12 +33,18 @@ $sql = "
 $params = [];
 
 if ($start && $end) {
-    $sql .= " WHERE DATE(timestamp) BETWEEN :start AND :end ";
-    $params[':start'] = $start;
-    $params[':end']   = $end;
+  $sql .= " WHERE DATE(timestamp) BETWEEN :start AND :end ";
+  $params[':start'] = $start;
+  $params[':end']   = $end;
 }
 
-$sql .= " ORDER BY timestamp ASC LIMIT :limit";
+$sql .= "
+    ORDER BY timestamp DESC
+    LIMIT :limit
+  ) t
+  ORDER BY timestamp ASC
+";
+
 
 $stmt = $pdo->prepare($sql);
 
