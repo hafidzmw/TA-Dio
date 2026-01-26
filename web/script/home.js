@@ -5,11 +5,11 @@ const REFRESH = 5000;
 const elV = document.getElementById("voltage");
 const elI = document.getElementById("current");
 const elP = document.getElementById("power");
-const elA = document.getElementById("anomaly");
+const elA = document.getElementById("balance");
 
 const btnOn  = document.getElementById("power-on-btn");
 const btnOff = document.getElementById("power-off-btn");
-const relayAlert = document.getElementById("relay-alert");
+const relayAlert = document.getElementById("power-control-alert");
 
 let chart;
 
@@ -82,7 +82,7 @@ async function loadChart() {
     return;
   }
 
-  chart = new Chart(document.getElementById("powerChart"), {
+  chart = new Chart(document.getElementById("allParamsChart"), {
     type: "line",
     data: {
       labels,
