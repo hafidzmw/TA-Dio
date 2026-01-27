@@ -11,13 +11,26 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadSettings() {
     try {
         const res = await fetch(API_GET);
+        if (!res.ok) throw new Error("Failed to fetch settings");
+
         const data = await res.json();
 
         document.getElementById("threshold").value = data.threshold;
         document.getElementById("thresholdValue").innerText = data.threshold;
 
-        document.querySelector(`input[name="mode"][value="${data.mode}"]`).checked = true;
-        document.getElementById("telegramToggle").checked = data.telegram_enabled == 1;
+        /* 🔧 [PERBAIKAN 1] Cek radio exists */
+        const modeRadio = document.querySelector(
+            `input[name="mode"][value="${data.mode}"]`
+        );
+        if (modeRadio) {
+            modeRadio.checked = true;
+        }
+
+        /* 🔧 [PERBAIKAN 2] Cek checkbox exists */
+        const telegramToggle = document.getElementById("telegramToggle");
+        if (telegramToggle) {
+            telegramToggle.checked = data.telegram_enabled == 1;
+        }
 
     } catch (err) {
         console.error("Failed to load settings", err);
@@ -27,7 +40,7 @@ async function loadSettings() {
 // simpan konfigurasi
 async function saveSettings() {
     const threshold = document.getElementById("threshold").value;
-    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const mode = document.querySelector('input[name="mode"]:checked')?.value;
     const telegram = document.getElementById("telegramToggle").checked ? 1 : 0;
 
     try {
@@ -40,6 +53,8 @@ async function saveSettings() {
                 telegram_enabled: telegram
             })
         });
+
+        if (!res.ok) throw new Error("Save failed");
 
         const result = await res.json();
 

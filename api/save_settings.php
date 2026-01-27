@@ -7,6 +7,13 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
+/* 🔧 [PERBAIKAN 1] Tangani preflight CORS */
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+/* Struktur tetap, hanya ditambah OPTIONS handler */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(["success" => false, "error" => "POST only"]);
@@ -14,9 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $data = json_decode(file_get_contents("php://input"), true);
-if (!$data) {
+
+/* 🔧 [PERBAIKAN 2] Validasi JSON & field */
+if (
+    !$data ||
+    !isset($data['threshold'], $data['mode'], $data['telegram_enabled'])
+) {
     http_response_code(400);
-    echo json_encode(["success" => false, "error" => "Invalid JSON"]);
+    echo json_encode(["success" => false, "error" => "Invalid JSON payload"]);
     exit;
 }
 
