@@ -1,8 +1,26 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://192.168.1.60:8081");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
+
+// ======================
+// PRE-FLIGHT REQUEST
+// ======================
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    echo json_encode(["status" => "ok"]);
+    exit;
+}
+
+// ======================
+// VALIDASI METHOD
+// ======================
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["error" => "POST only"]);
+    exit;
+}
 
 $data = json_decode(file_get_contents("php://input"), true);
 
