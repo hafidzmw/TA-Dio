@@ -1,5 +1,5 @@
 const API = "http://192.168.1.60:8080";
-const REFRESH = 5000;
+const REFRESH = 1000;
 
 // ELEMENTS
 const elV = document.getElementById("voltage");
