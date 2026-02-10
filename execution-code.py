@@ -47,7 +47,6 @@ async def predict_data(data: SensorData):
 
     return {
         "status": "success",
-        "score": score,
         "is_anomaly": 1 if score > 0.5 else 0,
         "server_inference_ms": server_latency_ms
     }

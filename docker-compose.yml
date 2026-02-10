@@ -3,9 +3,9 @@ version: '3.8'
 services:
   ml-server:
     container_name: local-ml
-    build: .             # Build dari folder ini
+    build: .             
     ports:
-      - "5000:5000"      # Port Laptop : Port Container
+      - "5000:5000"
     volumes:
       # Mapping folder model di laptop ke dalam container
       # Format: ./folder_laptop : /folder_di_container
