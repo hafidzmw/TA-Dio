@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ml-server:
+    container_name: skripsi_ml_container
+    build: .             # Build dari folder ini
+    ports:
+      - "5000:5000"      # Port Laptop : Port Container
+    volumes:
+      # Mapping folder model di laptop ke dalam container
+      # Format: ./folder_laptop : /folder_di_container
+      - ./model:/app/model
+    environment:
+      - MODEL_PATH=/app/model/model_uncompressed.h5
+    restart: unless-stopped
