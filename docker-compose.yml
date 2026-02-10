@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   ml-server:
-    container_name: skripsi_ml_container
+    container_name: local-ml
     build: .             # Build dari folder ini
     ports:
       - "5000:5000"      # Port Laptop : Port Container
