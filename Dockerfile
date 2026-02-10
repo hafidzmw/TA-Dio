@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 5000
 
 # Perintah default (bisa di-override oleh docker-compose)
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uvicorn", "execution-code:app", "--host", "0.0.0.0", "--port", "5000"]
