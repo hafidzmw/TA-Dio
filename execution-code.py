@@ -8,7 +8,7 @@ import time
 app = FastAPI()
 
 # Ambil path model dari environment variable (settingan docker-compose)
-MODEL_FILE = os.getenv("MODEL_PATH", "model/model_uncompressed.h5")
+MODEL_FILE = os.getenv("MODEL_PATH", "model/model_dnn(sigmoid).h5")
 model = None
 
 @app.on_event("startup")

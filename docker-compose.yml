@@ -11,5 +11,5 @@ services:
       # Format: ./folder_laptop : /folder_di_container
       - ./model:/app/model
     environment:
-      - MODEL_PATH=/app/model/model_uncompressed.h5
+      - MODEL_PATH=/app/model/model_dnn(sigmoid).h5
     restart: unless-stopped
