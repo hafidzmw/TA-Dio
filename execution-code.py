@@ -38,7 +38,7 @@ async def predict_data(data: SensorData):
     # Sesuaikan bentuk array dengan input modelmu (biasanya butuh shape (1, 3))
     input_arr = np.array([[data.voltage, data.current, data.power]])
     
-    prediction = model.predict(input_arr)
+    prediction = model(input_arr, training=False)
     score = float(prediction[0][0])
     
     # 3. Stop Timer Server
