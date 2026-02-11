@@ -16,7 +16,7 @@ if (!$data) {
 
 $required = [
     'timestamp','voltage','current','power',
-    'pf','energy_kwh','ai_score','anomaly_flag'
+    'pf','energy_kwh','ai_score','anomaly_flag', 'tinyml_latency'
 ];
 
 foreach ($required as $r) {
@@ -37,8 +37,8 @@ try {
 
     $stmt = $pdo->prepare("
         INSERT INTO electricity_logs
-        (timestamp, voltage, current, power, pf, energy_kwh, ai_score, anomaly_flag)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (timestamp, voltage, current, power, pf, energy_kwh, ai_score, anomaly_flag, tinyml_latency)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmt->execute([
@@ -49,7 +49,8 @@ try {
         $data['pf'],
         $data['energy_kwh'],
         $data['ai_score'],
-        $data['anomaly_flag']
+        $data['anomaly_flag'],
+        $data['tinyml_latency']
     ]);
 
     echo json_encode([
