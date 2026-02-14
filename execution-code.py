@@ -17,9 +17,9 @@ def load_model():
     print(f"Mencoba memuat model dari: {MODEL_FILE}")
     if os.path.exists(MODEL_FILE):
         model = tf.keras.models.load_model(MODEL_FILE)
-        print("✅ Model BERHASIL dimuat!")
+        print("Model berhasil dimuat")
     else:
-        print("❌ Model TIDAK DITEMUKAN!")
+        print("Model tidak ditemukan")
 
 class SensorData(BaseModel):
     voltage: float
@@ -31,13 +31,10 @@ async def predict_data(data: SensorData):
     if model is None:
         raise HTTPException(status_code=500, detail="Model belum siap")
 
-    # 1. Start Timer Server
-    start_proc = time.perf_counter()
-
-    # 2. Pre-processing & Inferensi
     # Sesuaikan bentuk array dengan input modelmu (biasanya butuh shape (1, 3))
     input_arr = np.array([[data.voltage, data.current, data.power]])
     
+    start_proc = time.perf_counter() #start time pindah di sini
     prediction = model(input_arr, training=False)
     score = float(prediction[0][0])
     
