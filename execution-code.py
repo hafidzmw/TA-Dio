@@ -36,10 +36,9 @@ async def predict_data(data: SensorData):
     
     start_proc = time.perf_counter() #start time pindah di sini
     prediction = model(input_arr, training=False)
-    score = float(prediction[0][0])
-    
-    # 3. Stop Timer Server
     end_proc = time.perf_counter()
+        
+    score = float(prediction[0][0])
     server_latency_ms = (end_proc - start_proc) * 1000
 
     return {
