@@ -28,8 +28,10 @@ class SensorData(BaseModel):
 
 @app.post("/predict")
 async def predict_data(data: SensorData):
+    sis_start = time.perf_counter()
     if model is None:
         raise HTTPException(status_code=500, detail="Model belum siap")
+
 
     # Sesuaikan bentuk array dengan input modelmu (biasanya butuh shape (1, 3))
     input_arr = np.array([[data.voltage, data.current, data.power]])
@@ -41,8 +43,13 @@ async def predict_data(data: SensorData):
     score = float(prediction[0][0])
     server_latency_ms = (end_proc - start_proc) * 1000
 
+    sis_end = time.perf_counter()
+    sis_latency = (sis_end - sis_start) * 1000
+    
     return {
         "status": "success",
         "is_anomaly": 1 if score > 0.5 else 0,
-        "server_inference_ms": server_latency_ms
-    }
+        "server_inference_ms": server_latency_ms,
+        "system_latency_ms": sis_latency
+    } 
+
