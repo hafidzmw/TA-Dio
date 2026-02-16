@@ -18,6 +18,12 @@ def load_model():
     if os.path.exists(MODEL_FILE):
         model = tf.keras.models.load_model(MODEL_FILE)
         print("Model berhasil dimuat")
+
+        print("Optimalisasi sistem")
+        dummy_input = np.array([[220.0, 0.5, 110.0]], dtype=np.float32)
+        for _ in range(20):
+            model(dummy_input, training=False)
+        print("Warm-up selesai! Server siap menerima request dengan cepat.")
     else:
         print("Model tidak ditemukan")
 
