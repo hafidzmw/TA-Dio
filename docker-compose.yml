@@ -7,9 +7,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      # Mapping folder model di laptop ke dalam container
-      # Format: ./folder_laptop : /folder_di_container
       - ./model:/app/model
     environment:
       - MODEL_PATH=/app/model/model_dnn(sigmoid).h5
+      - MODEL_TINY_PATH=/app/model/model_dnn_tinyml.tflite
     restart: unless-stopped
