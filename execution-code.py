@@ -21,9 +21,9 @@ output_details = None
 # KONFIGURASI MIN-MAX SCALER
 # Sesuaikan dengan nilai latih datasetmu!
 # ==========================================
-V_MIN, V_MAX = 0.0, 250.0
-I_MIN, I_MAX = 0.0, 5.0
-P_MIN, P_MAX = 0.0, 1250.0
+V_MIN, V_MAX = 214.6, 234.0
+I_MIN, I_MAX = 0.0, 6.74
+P_MIN, P_MAX = 0.0, 1453.0
 
 @app.on_event("startup")
 def load_models():
@@ -65,9 +65,7 @@ class SensorData(BaseModel):
     current: float
     power: float
 
-# ==========================================
-# ENDPOINT 1: PREDIKSI ML KONVENSIONAL (.h5)
-# ==========================================
+# ML KONVENSIONAL .h5
 @app.post("/predict")
 async def predict_h5(data: SensorData):
     if model_h5 is None:
@@ -93,9 +91,7 @@ async def predict_h5(data: SensorData):
         "server_inference_ms": round(server_latency_ms, 4)
     } 
 
-# ==========================================
-# ENDPOINT 2: PREDIKSI TINYML (.tflite)
-# ==========================================
+# TINYML .tflite
 @app.post("/tinypredict")
 async def predict_tflite(data: SensorData):
     if interpreter is None:
