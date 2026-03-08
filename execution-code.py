@@ -71,11 +71,14 @@ async def predict_h5(data: SensorData):
     if model_h5 is None:
         raise HTTPException(status_code=500, detail="Model H5 belum siap")
 
-    # Min-Max Scaling
     v_scaled = (data.voltage - V_MIN) / (V_MAX - V_MIN)
     i_scaled = (data.current - I_MIN) / (I_MAX - I_MIN)
     p_scaled = (data.power - P_MIN) / (P_MAX - P_MIN)
-    
+
+    v_scaled = float(np.clip(v_scaled, 0.0, 1.0))
+    i_scaled = float(np.clip(i_scaled, 0.0, 1.0))
+    p_scaled = float(np.clip(p_scaled, 0.0, 1.0))
+
     input_arr = np.array([[v_scaled, i_scaled, p_scaled]], dtype=np.float32)
     
     start_proc = time.perf_counter()
