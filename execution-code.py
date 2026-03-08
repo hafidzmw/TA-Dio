@@ -8,8 +8,8 @@ import time
 app = FastAPI()
 
 # 1. Path untuk kedua model
-MODEL_H5_FILE = os.getenv("MODEL_PATH", "model/model_dnn_terbaru_7Maret26(sigmoid).keras")
-MODEL_TFLITE_FILE = os.getenv("MODEL_TINY_PATH", "model/model_dnn(sigmoid)tinyml-7Maret26.tflite")
+MODEL_H5_FILE = os.getenv("MODEL_PATH", "model/model_dnn070326.keras")
+MODEL_TFLITE_FILE = os.getenv("MODEL_TINY_PATH", "model/model_dnntiny070326.tflite")
 
 # 2. Variabel Global
 model_h5 = None
