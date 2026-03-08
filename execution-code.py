@@ -92,7 +92,7 @@ async def predict_h5(data: SensorData):
     
     return {
         "status": "success",
-        "is_anomaly": 1 if score > 0.3 else 0,
+        "is_anomaly": 1 if score > 0.5 else 0,
         "server_inference_ms": round(server_latency_ms, 4),
         "probabilitas": score
     } 
@@ -126,7 +126,7 @@ async def predict_tflite(data: SensorData):
     
     return {
         "status": "success",
-        "is_anomaly": 1 if probabilitas > 0.3 else 0,
+        "is_anomaly": 1 if probabilitas > 0.5 else 0,
         "server_inference_ms": round(server_latency_ms, 4),
         "probabilitas": probabilitas
     }
