@@ -71,10 +71,12 @@ async def predict_h5(data: SensorData):
     if model_h5 is None:
         raise HTTPException(status_code=500, detail="Model H5 belum siap")
 
+    # Ubah fungsi prediksinya menjadi seperti ini
     v_scaled = (data.voltage - V_MIN) / (V_MAX - V_MIN)
     i_scaled = (data.current - I_MIN) / (I_MAX - I_MIN)
     p_scaled = (data.power - P_MIN) / (P_MAX - P_MIN)
 
+    # Tambahkan baris ini untuk memotong rentang ke 0 - 1 (Sama dengan ESP32)
     v_scaled = float(np.clip(v_scaled, 0.0, 1.0))
     i_scaled = float(np.clip(i_scaled, 0.0, 1.0))
     p_scaled = float(np.clip(p_scaled, 0.0, 1.0))
@@ -100,10 +102,15 @@ async def predict_tflite(data: SensorData):
     if interpreter is None:
         raise HTTPException(status_code=500, detail="Model TFLite belum siap")
 
-    # Min-Max Scaling (Kondisi 100% sama dengan H5)
+    # Ubah fungsi prediksinya menjadi seperti ini
     v_scaled = (data.voltage - V_MIN) / (V_MAX - V_MIN)
     i_scaled = (data.current - I_MIN) / (I_MAX - I_MIN)
     p_scaled = (data.power - P_MIN) / (P_MAX - P_MIN)
+
+    # Tambahkan baris ini untuk memotong rentang ke 0 - 1 (Sama dengan ESP32)
+    v_scaled = float(np.clip(v_scaled, 0.0, 1.0))
+    i_scaled = float(np.clip(i_scaled, 0.0, 1.0))
+    p_scaled = float(np.clip(p_scaled, 0.0, 1.0))
 
     input_arr = np.array([[v_scaled, i_scaled, p_scaled]], dtype=np.float32)
     
