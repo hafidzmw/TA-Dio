@@ -1,104 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electricity Monitoring</title>
-
-    <link rel="stylesheet" href="css/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electricity Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <div class="main-container">
-        <!-- Side bar -->
-        <div class="side-bar">
-            <h2>Electricity Monitoring</h2>
-            <ul>
-                <li id="home"><a href="index.html">Home</a></li>
-                <li><a href="reports.html">Reports Chart</a></li>
-                <li><a href="settings.html">Settings</a></li>
-            </ul>
-        </div>
+<div class="main-container">
 
-        <!-- Main content -->
-        <div class="main-content">
-            <div class="page-header">
-                <h2>Energy Monitoring Dashboard</h2>
-                <p>Secure your electricity</p>
-            </div>
-            <!-- Dashboard Section -->
- 
-            <!-- Metric Cards -->
-            <div class="card-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">THEFT DETECTION</h3>
-                        <div class="card-icon">⚠️</div>
-                    </div>
-                    <div class="dashboard-value" id="balance">--<span class="unit"></span></div>
-                    <div class="trend">Theft detection flag</div>
-                </div>
- 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">VOLTAGE</h3>
-                        <div class="card-icon">V</div>
-                    </div>
-                    <div class="dashboard-value" id="voltage">--<span class="unit">V</span></div>
-                    <div class="trend">Line voltage</div>
-                </div>
- 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">CURRENT</h3>
-                        <div class="card-icon">A</div>
-                    </div>
-                    <div class="dashboard-value" id="current">--<span class="unit">A</span></div>
-                    <div class="trend">Line current</div>
-                </div>
- 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">POWER</h3>
-                        <div class="card-icon">W</div>
-                    </div>
-                    <div class="dashboard-value" id="power">--<span class="unit">W</span></div>
-                    <div class="trend">Active power</div>
-                </div>
-            </div>
-            <!-- End of Metric Cards -->
-             
-            <!-- Chart and Action Button Section -->
-            <div class="chart-button-section">
-                <!-- chart section -->
-                <div class="chart-section">
-                    <h3>Power Consumption Chart</h3>
-                    <canvas id="allParamsChart" width="600" height="300"></canvas>
-                </div>
-                <!-- end of chart section -->
+  <!-- Sidebar -->
+  <div class="side-bar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚡</span>
+      <h2>Electricity<br>Monitoring</h2>
+      <div class="brand-sub">TinyML System</div>
+    </div>
+    <nav>
+      <ul>
+        <li id="home">
+          <a href="index.html">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="reports.html">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div><span class="status-dot"></span>LIVE DATA</div>
+      <div>ESP32 + PZEM-004T</div>
+    </div>
+  </div>
 
-                <!-- action button section -->
-                <div class="action-button-section">
-                    <div class="card-header">
-                        <h3 class="card-title">Quick Action</h3>
-                    </div>
-                    <div class="action-content">
-                        <div id="power-control-alert" style="display:none;" class="alert"></div>
-                        <p style="margin-bottom:15px;">Cut Off Button</p>
-                        <div class="button-section">
-                            <button id="power-on-btn" class="btn btn-success" onclick="setRelay(1)" style="flex:1;">Power ON</button>
-                            <button id="power-off-btn" class="btn btn-danger" onclick="setRelay(0)" style="flex:1;">Power OFF</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- end of action button section -->
-            </div>
-            <!-- End of Chart Section -->
-        </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="offline-banner" style="display:none;">
+      <span class="offline-icon">⚠</span>
+      <div>
+        <strong>Device Offline</strong>
+        <span>Cannot reach ESP32 at <code>192.168.1.60</code> — retrying every second...</span>
+      </div>
     </div>
 
+    <div class="page-header">
+      <div class="page-header-text">
+        <h2>Energy Monitoring Dashboard</h2>
+        <p>Real-time electricity anomaly detection via TinyML</p>
+      </div>
+      <span id="status-badge" class="live-badge">
+        <span id="status-dot-sidebar" class="status-dot"></span>LIVE
+      </span>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="card-grid">
+      <div class="card card--theft">
+        <div class="card-header">
+          <h3 class="card-title">THEFT DETECTION</h3>
+          <div class="card-icon">⚠</div>
+        </div>
+        <div class="dashboard-value" id="balance">--</div>
+        <div class="trend">Anomaly flag from TinyML</div>
+      </div>
+
+      <div class="card card--voltage">
+        <div class="card-header">
+          <h3 class="card-title">VOLTAGE</h3>
+          <div class="card-icon">V</div>
+        </div>
+        <div class="dashboard-value" id="voltage">--<span class="unit">V</span></div>
+        <div class="trend">Line voltage</div>
+      </div>
+
+      <div class="card card--current">
+        <div class="card-header">
+          <h3 class="card-title">CURRENT</h3>
+          <div class="card-icon">A</div>
+        </div>
+        <div class="dashboard-value" id="current">--<span class="unit">A</span></div>
+        <div class="trend">Line current</div>
+      </div>
+
+      <div class="card card--power">
+        <div class="card-header">
+          <h3 class="card-title">POWER</h3>
+          <div class="card-icon">W</div>
+        </div>
+        <div class="dashboard-value" id="power">--<span class="unit">W</span></div>
+        <div class="trend">Active power</div>
+      </div>
+    </div>
+
+    <!-- Chart + Action -->
+    <div class="chart-button-section">
+      <div class="chart-section">
+        <h3>Power Consumption — Live</h3>
+        <canvas id="allParamsChart" height="200"></canvas>
+      </div>
+
+      <div class="action-button-section">
+        <div class="card-header">
+          <h3 class="card-title">QUICK ACTION</h3>
+        </div>
+        <div class="action-content">
+          <div id="power-control-alert" style="display:none;" class="alert"></div>
+          <div class="action-label">Relay Cut-Off Control</div>
+          <div class="button-section">
+            <button id="power-on-btn" class="btn btn-success" onclick="setRelay(1)">⚡ Power ON</button>
+            <button id="power-off-btn" class="btn btn-danger" onclick="setRelay(0)">✕ Power OFF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 <script src="script/home.js"></script>
 </body>
 </html>
