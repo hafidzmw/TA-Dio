@@ -1,14 +1,17 @@
 const API = "http://192.168.1.60:8080";
 const REFRESH = 1000;
 
+// Threshold: data dianggap stale jika lebih tua dari X detik
+const STALE_THRESHOLD_SEC = 10;
+
 // ELEMENTS
 const elV = document.getElementById("voltage");
 const elI = document.getElementById("current");
 const elP = document.getElementById("power");
 const elA = document.getElementById("balance");
 
-const btnOn  = document.getElementById("power-on-btn");
-const btnOff = document.getElementById("power-off-btn");
+const btnOn      = document.getElementById("power-on-btn");
+const btnOff     = document.getElementById("power-off-btn");
 const relayAlert = document.getElementById("power-control-alert");
 
 let chart;
@@ -18,42 +21,46 @@ let isOffline = false;
 // OFFLINE STATE MANAGER
 // ======================
 function setOffline(offline) {
-  if (offline === isOffline) return; // no change
+  if (offline === isOffline) return;
   isOffline = offline;
 
-  const banner   = document.getElementById("offline-banner");
-  const badge    = document.getElementById("status-badge");
-  const statusDot= document.getElementById("status-dot-sidebar");
+  const banner    = document.getElementById("offline-banner");
+  const badge     = document.getElementById("status-badge");
+  const statusDot = document.getElementById("status-dot-sidebar");
+  const badgeText = document.getElementById("badge-text");
 
   if (offline) {
-    // Show banner
-    banner.style.display = "flex";
+    banner.style.display  = "flex";
+    badgeText.textContent = "OFFLINE";
+    badge.className       = "live-badge live-badge--offline";
+    statusDot.className   = "status-dot status-dot--offline";
 
-    // Sidebar badge → OFFLINE
-    badge.textContent  = "OFFLINE";
-    badge.className    = "live-badge live-badge--offline";
-    statusDot.className= "status-dot status-dot--offline";
-
-    // Reset metric cards to --
-    elV.innerText = "--";
-    elI.innerText = "--";
-    elP.innerText = "--";
-    elA.innerText = "--";
+    elV.innerText   = "--";
+    elI.innerText   = "--";
+    elP.innerText   = "--";
+    elA.innerText   = "--";
     elA.style.color = "";
 
-    // Disable relay buttons
     btnOn.disabled  = true;
     btnOff.disabled = true;
-
   } else {
-    // Hide banner
-    banner.style.display = "none";
-
-    // Sidebar badge → LIVE
-    badge.textContent  = "LIVE";
-    badge.className    = "live-badge";
-    statusDot.className= "status-dot";
+    banner.style.display  = "none";
+    badgeText.textContent = "LIVE";
+    badge.className       = "live-badge";
+    statusDot.className   = "status-dot";
   }
+}
+
+// ======================
+// CEK APAKAH DATA MASIH FRESH
+// (ESP32 mati tapi backend tetap hidup → data lama di DB)
+// ======================
+function isDataStale(timestampStr) {
+  if (!timestampStr) return true;
+  const dataTime = new Date(timestampStr);
+  const now      = new Date();
+  const diffSec  = (now - dataTime) / 1000;
+  return diffSec > STALE_THRESHOLD_SEC;
 }
 
 // ======================
@@ -65,6 +72,12 @@ async function loadLatest() {
     if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
 
+    // Cek apakah data masih fresh (ESP32 bisa mati walau backend hidup)
+    if (!d || !d.timestamp || isDataStale(d.timestamp)) {
+      setOffline(true);
+      return;
+    }
+
     setOffline(false);
 
     elV.innerText = `${d.voltage} V`;
@@ -72,13 +85,14 @@ async function loadLatest() {
     elP.innerText = `${d.power} W`;
 
     if (d.anomaly_flag == 1) {
-      elA.innerText  = "DETECTED";
+      elA.innerText   = "DETECTED";
       elA.style.color = "var(--danger)";
     } else {
-      elA.innerText  = "NORMAL";
+      elA.innerText   = "NORMAL";
       elA.style.color = "var(--accent2)";
     }
   } catch (e) {
+    // Fetch benar-benar gagal (backend juga mati)
     setOffline(true);
   }
 }
@@ -94,18 +108,18 @@ async function loadSettings() {
 
     if (!isOffline) {
       if (s.mode === "auto_cutoff") {
-        btnOn.disabled  = true;
-        btnOff.disabled = true;
-        relayAlert.innerText      = "Auto Cut-Off ACTIVE";
-        relayAlert.style.display  = "block";
+        btnOn.disabled        = true;
+        btnOff.disabled       = true;
+        relayAlert.innerText  = "Auto Cut-Off ACTIVE";
+        relayAlert.style.display = "block";
       } else {
-        btnOn.disabled  = false;
-        btnOff.disabled = false;
-        relayAlert.style.display  = "none";
+        btnOn.disabled        = false;
+        btnOff.disabled       = false;
+        relayAlert.style.display = "none";
       }
     }
   } catch (e) {
-    // settings fetch failed — relay buttons already disabled by setOffline()
+    // settings fetch failed — relay buttons sudah di-disable oleh setOffline()
   }
 }
 
@@ -145,7 +159,7 @@ async function loadChart() {
       return;
     }
 
-    Chart.defaults.color = '#7a8aaa';
+    Chart.defaults.color       = '#7a8aaa';
     Chart.defaults.borderColor = 'rgba(0,200,255,0.08)';
 
     chart = new Chart(document.getElementById("allParamsChart"), {
@@ -175,7 +189,7 @@ async function loadChart() {
       }
     });
   } catch (e) {
-    // chart fetch failed silently — device offline handled by loadLatest
+    // chart fetch failed silently
   }
 }
 

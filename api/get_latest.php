@@ -22,7 +22,7 @@ try {
 
     if ($limit === 1) {
         $stmt = $pdo->query("
-            SELECT voltage, current, power, anomaly_flag
+            SELECT timestamp, voltage, current, power, anomaly_flag
             FROM electricity_logs
             ORDER BY timestamp DESC
             LIMIT 1
