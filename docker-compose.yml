@@ -9,6 +9,6 @@ services:
     volumes:
       - ./model:/app/model
     environment:
-      - MODEL_PATH=/app/model/model_dnn070326.keras
-      - MODEL_TINY_PATH=/app/model/model_dnntiny070326.tflite
+      - MODEL_PATH=/app/model/model_dnn300326.keras
+      - MODEL_TINY_PATH=/app/model/model_dnntiny300326.tflite
     restart: unless-stopped

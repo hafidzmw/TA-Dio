@@ -8,8 +8,8 @@ import time
 app = FastAPI()
 
 # 1. Path untuk kedua model
-MODEL_H5_FILE = os.getenv("MODEL_PATH", "model/model_dnn070326.keras")
-MODEL_TFLITE_FILE = os.getenv("MODEL_TINY_PATH", "model/model_dnntiny070326.tflite")
+MODEL_H5_FILE = os.getenv("MODEL_PATH", "model/model_dnn300326.keras")
+MODEL_TFLITE_FILE = os.getenv("MODEL_TINY_PATH", "model/model_dnntiny300326.tflite")
 
 # 2. Variabel Global
 model_h5 = None
@@ -17,10 +17,7 @@ interpreter = None
 input_details = None
 output_details = None
 
-# ==========================================
-# KONFIGURASI MIN-MAX SCALER
-# Sesuaikan dengan nilai latih datasetmu!
-# ==========================================
+# Min - Max Scalling
 V_MIN, V_MAX = 214.6, 234.0
 I_MIN, I_MAX = 0.0, 6.74
 P_MIN, P_MAX = 0.0, 1453.0
