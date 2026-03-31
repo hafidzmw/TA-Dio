@@ -1,8 +1,9 @@
 const API = "http://192.168.1.60:8080";
 const REFRESH = 1000;
 
-// Data dianggap stale jika lebih dari X detik (dihitung server-side)
-const STALE_THRESHOLD_SEC = 10;
+// Berapa kali timestamp boleh sama sebelum dianggap offline
+// Default: 5 kali × 1 detik = 5 detik tidak ada data baru
+const MAX_STALE_COUNT = 5;
 
 // ELEMENTS
 const elV = document.getElementById("voltage");
@@ -15,7 +16,9 @@ const btnOff     = document.getElementById("power-off-btn");
 const relayAlert = document.getElementById("power-control-alert");
 
 let chart;
-let isOffline = false;
+let isOffline    = false;
+let lastTimestamp = null;   // timestamp terakhir yang diterima
+let staleCount    = 0;      // berapa kali timestamp tidak berubah
 
 // ======================
 // OFFLINE STATE MANAGER
@@ -60,14 +63,28 @@ async function loadLatest() {
     if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
 
-    // seconds_ago dihitung oleh MySQL (TIMESTAMPDIFF server-side)
-    // sehingga tidak terpengaruh timezone browser vs server
-    const secondsAgo = parseInt(d.seconds_ago ?? 9999);
-    if (!d || secondsAgo > STALE_THRESHOLD_SEC) {
+    // Tidak ada data sama sekali
+    if (!d || !d.voltage) {
       setOffline(true);
       return;
     }
 
+    // Cek apakah timestamp berubah dibanding fetch sebelumnya
+    const currentTimestamp = d.timestamp ?? null;
+
+    if (currentTimestamp && currentTimestamp === lastTimestamp) {
+      // Timestamp sama → ESP32 belum kirim data baru
+      staleCount++;
+      if (staleCount >= MAX_STALE_COUNT) {
+        setOffline(true);
+      }
+      // Tetap tampilkan data lama selama belum melewati threshold
+      return;
+    }
+
+    // Timestamp berbeda → data fresh, reset counter
+    lastTimestamp = currentTimestamp;
+    staleCount    = 0;
     setOffline(false);
 
     elV.innerText = `${d.voltage} V`;
@@ -82,8 +99,11 @@ async function loadLatest() {
       elA.style.color = "var(--accent2)";
     }
   } catch (e) {
-    // fetch benar-benar gagal (backend juga mati)
-    setOffline(true);
+    // Fetch benar-benar gagal (backend juga mati)
+    staleCount++;
+    if (staleCount >= MAX_STALE_COUNT) {
+      setOffline(true);
+    }
   }
 }
 
