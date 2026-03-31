@@ -4,7 +4,6 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-// Handle preflight (penting!)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -21,8 +20,11 @@ try {
     );
 
     if ($limit === 1) {
+        // Hitung selisih detik di sisi MySQL (server-side), bukan di browser
+        // sehingga timezone mismatch tidak jadi masalah
         $stmt = $pdo->query("
-            SELECT timestamp, voltage, current, power, anomaly_flag
+            SELECT voltage, current, power, anomaly_flag,
+                   TIMESTAMPDIFF(SECOND, timestamp, NOW()) AS seconds_ago
             FROM electricity_logs
             ORDER BY timestamp DESC
             LIMIT 1
@@ -37,11 +39,10 @@ try {
         ");
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         echo json_encode(array_reverse($stmt->fetchAll(PDO::FETCH_ASSOC)));
     }
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error"=>$e->getMessage()]);
+    echo json_encode(["error" => $e->getMessage()]);
 }

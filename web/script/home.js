@@ -1,7 +1,7 @@
 const API = "http://192.168.1.60:8080";
 const REFRESH = 1000;
 
-// Threshold: data dianggap stale jika lebih tua dari X detik
+// Data dianggap stale jika lebih dari X detik (dihitung server-side)
 const STALE_THRESHOLD_SEC = 10;
 
 // ELEMENTS
@@ -52,18 +52,6 @@ function setOffline(offline) {
 }
 
 // ======================
-// CEK APAKAH DATA MASIH FRESH
-// (ESP32 mati tapi backend tetap hidup → data lama di DB)
-// ======================
-function isDataStale(timestampStr) {
-  if (!timestampStr) return true;
-  const dataTime = new Date(timestampStr);
-  const now      = new Date();
-  const diffSec  = (now - dataTime) / 1000;
-  return diffSec > STALE_THRESHOLD_SEC;
-}
-
-// ======================
 // LOAD LATEST SENSOR
 // ======================
 async function loadLatest() {
@@ -72,8 +60,10 @@ async function loadLatest() {
     if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
 
-    // Cek apakah data masih fresh (ESP32 bisa mati walau backend hidup)
-    if (!d || !d.timestamp || isDataStale(d.timestamp)) {
+    // seconds_ago dihitung oleh MySQL (TIMESTAMPDIFF server-side)
+    // sehingga tidak terpengaruh timezone browser vs server
+    const secondsAgo = parseInt(d.seconds_ago ?? 9999);
+    if (!d || secondsAgo > STALE_THRESHOLD_SEC) {
       setOffline(true);
       return;
     }
@@ -92,7 +82,7 @@ async function loadLatest() {
       elA.style.color = "var(--accent2)";
     }
   } catch (e) {
-    // Fetch benar-benar gagal (backend juga mati)
+    // fetch benar-benar gagal (backend juga mati)
     setOffline(true);
   }
 }
@@ -108,18 +98,18 @@ async function loadSettings() {
 
     if (!isOffline) {
       if (s.mode === "auto_cutoff") {
-        btnOn.disabled        = true;
-        btnOff.disabled       = true;
-        relayAlert.innerText  = "Auto Cut-Off ACTIVE";
+        btnOn.disabled           = true;
+        btnOff.disabled          = true;
+        relayAlert.innerText     = "Auto Cut-Off ACTIVE";
         relayAlert.style.display = "block";
       } else {
-        btnOn.disabled        = false;
-        btnOff.disabled       = false;
+        btnOn.disabled           = false;
+        btnOff.disabled          = false;
         relayAlert.style.display = "none";
       }
     }
   } catch (e) {
-    // settings fetch failed — relay buttons sudah di-disable oleh setOffline()
+    // relay buttons sudah di-disable oleh setOffline()
   }
 }
 
