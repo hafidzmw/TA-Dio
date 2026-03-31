@@ -20,11 +20,8 @@ try {
     );
 
     if ($limit === 1) {
-        // Hitung selisih detik di sisi MySQL (server-side), bukan di browser
-        // sehingga timezone mismatch tidak jadi masalah
         $stmt = $pdo->query("
-            SELECT voltage, current, power, anomaly_flag,
-                   TIMESTAMPDIFF(SECOND, timestamp, NOW()) AS seconds_ago
+            SELECT timestamp, voltage, current, power, anomaly_flag
             FROM electricity_logs
             ORDER BY timestamp DESC
             LIMIT 1
