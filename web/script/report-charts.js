@@ -1,7 +1,7 @@
 // ================================
 // CONFIG
 // ================================
-const API_URL = "http://${window.location.hostname}:8080/get_reports.php";
+const API_URL = "http://192.168.1.60:8080/get_reports.php";
 
 let powerChart, currentChart, voltageChart, anomalyChart;
 let reportData = []; // cache data (siap untuk export CSV nanti)
