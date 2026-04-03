@@ -1,5 +1,5 @@
-const API_GET = "http://192.168.1.60:8080/get_settings.php";
-const API_SAVE = "http://192.168.1.60:8080/save_settings.php";
+const API_GET = "http://${window.location.hostname}:8080/get_settings.php";
+const API_SAVE = "http://${window.location.hostname}:8080/save_settings.php";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
