@@ -1,4 +1,4 @@
-const API = "http://192.168.1.60:8080";
+const API = "http://${window.location.hostname}:8080";
 const REFRESH = 1000;
 
 // Berapa kali timestamp boleh sama sebelum dianggap offline
