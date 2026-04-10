@@ -41,7 +41,7 @@ async function loadSettings() {
 async function saveSettings() {
     const threshold = document.getElementById("threshold").value;
     const mode = document.querySelector('input[name="mode"]:checked')?.value;
-    const telegram = document.getElementById("telegramToggle").checked ? 1 : 0;
+    const telegram = 1;
 
     try {
         const res = await fetch(API_SAVE, {
